@@ -93,22 +93,29 @@ public class SecurityConfig {
 	// ── SecurityFilterChain ───────────────────────────────────
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-		http.csrf(csrf -> csrf.disable()).cors(cors -> cors.configurationSource(corsConfigurationSource()))
-				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-				.authorizeHttpRequests(
-						auth -> auth.requestMatchers("/api/auth/**", "/ws/**").permitAll().anyRequest().authenticated())
-				.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
-		return http.build();
+	    http
+	        .csrf(csrf -> csrf.disable())
+	        .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+	        .sessionManagement(session ->
+	            session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+	        .authorizeHttpRequests(auth -> auth
+	            .requestMatchers("/api/auth/**", "/ws/**").permitAll()
+	            .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
+	            .anyRequest().authenticated()
+	        )
+	        .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+	    return http.build();
 	}
 
 	// ── CORS ──────────────────────────────────────────────────
 	@Bean
 	public CorsConfigurationSource corsConfigurationSource() {
 		CorsConfiguration config = new CorsConfiguration();
-		config.setAllowedOrigins(List.of("http://localhost:3000"));
+		config.setAllowedOrigins(List.of("*"));
 		config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
 		config.setAllowedHeaders(List.of("*"));
 		config.setAllowCredentials(true);
+		   config.setMaxAge(3600L);
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 		source.registerCorsConfiguration("/**", config);
 		return source;
