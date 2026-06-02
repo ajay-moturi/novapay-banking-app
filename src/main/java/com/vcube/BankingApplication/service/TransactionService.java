@@ -126,6 +126,7 @@ public class TransactionService {
 	}
 
 	// ── Transaction History ───────────────────────────────────
+	@Transactional
 	public Page<TransactionResponse> getHistory(String email, int page, int size) {
 		User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
 
@@ -139,6 +140,7 @@ public class TransactionService {
 	}
 
 	// ── Spending Analytics ────────────────────────────────────
+	@Transactional
 	public List<AnalyticsResponse> getSpendingByCategory(String email) {
 		User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
 

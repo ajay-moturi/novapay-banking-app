@@ -6,6 +6,7 @@ import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.vcube.BankingApplication.dto.TransactionDTOs.AccountResponse;
 import com.vcube.BankingApplication.dto.TransactionDTOs.CreateAccountRequest;
@@ -13,8 +14,6 @@ import com.vcube.BankingApplication.entity.Account;
 import com.vcube.BankingApplication.entity.User;
 import com.vcube.BankingApplication.repository.AccountRepository;
 import com.vcube.BankingApplication.repository.UserRepository;
-
-import lombok.RequiredArgsConstructor;
 
 @Service
 public class AccountService {
@@ -37,6 +36,7 @@ public class AccountService {
 	}
 
 	// ── Get User Accounts ─────────────────────────────────────
+	@Transactional
 	public List<AccountResponse> getUserAccounts(String email) {
 		User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
 
